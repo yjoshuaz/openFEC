@@ -151,6 +151,11 @@ through Travis CI accordingly.
         $ git flow hotfix start my-hotfix
 
 * Reviewer merges hotfix branch into develop and master and pushes to origin
+
+        $ git flow hotfix finish my-hotfix
+        $ git push origin develop
+        $ git push origin master --tags
+
 * [auto] Develop is deployed to dev
 * [auto] Master is deployed to prod
 
@@ -162,10 +167,13 @@ through Travis CI accordingly.
 
 * [auto] Release is deployed to stage
 * Review of staging
-* Developer merges release branch into master and pushes to origin
+* Developer merges release branch into master and develop and pushes to origin
 
         $ git flow release finish my-release
+        $ git push origin develop
+        $ git push origin master --tags
 
+* [auto] Develop is deployed to dev
 * [auto] Master is deployed to prod
 
 #### Data for development and staging environments

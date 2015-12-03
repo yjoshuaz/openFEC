@@ -14,7 +14,7 @@ from webservices import __API_VERSION__
 TEST_CONN = os.getenv('SQLA_TEST_CONN', 'postgresql:///cfdm-unit-test')
 
 rest.app.config['NPLUSONE_RAISE'] = True
-NPlusOne(rest.app)
+# NPlusOne(rest.app)
 
 
 def _reset_schema():

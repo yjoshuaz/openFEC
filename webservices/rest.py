@@ -36,6 +36,7 @@ from webservices.resources import reports
 from webservices.resources import sched_a
 from webservices.resources import sched_b
 from webservices.resources import sched_e
+from webservices.resources import download
 from webservices.resources import aggregates
 from webservices.resources import candidate_aggregates
 from webservices.resources import candidates
@@ -182,7 +183,7 @@ api.add_resource(
     '/candidate/<candidate_id>/committees/history/',
     '/candidate/<candidate_id>/committees/history/<int:cycle>/',
 )
-api.add_resource(totals.TotalsView, '/committee/<string:committee_id>/totals/')
+api.add_resource(totals.TotalsView, '/committee/<string:committee_id>/totals/', '/totals/<string:committee_type>/')
 api.add_resource(reports.ReportsView, '/committee/<string:committee_id>/reports/', '/reports/<string:committee_type>/')
 api.add_resource(CandidateNameSearch, '/names/candidates/')
 api.add_resource(CommitteeNameSearch, '/names/committees/')
@@ -238,6 +239,7 @@ api.add_resource(
 )
 api.add_resource(filings.FilingsList, '/filings/')
 
+api.add_resource(download.DownloadView, '/download/<path:path>/')
 
 app.config.update({
     'APISPEC_SWAGGER_URL': None,

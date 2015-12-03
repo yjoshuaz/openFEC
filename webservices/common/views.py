@@ -1,4 +1,5 @@
 import sqlalchemy as sa
+from flask_apispec import Ref, use_kwargs, marshal_with
 
 from webservices import utils
 from webservices import filters
@@ -10,16 +11,22 @@ from webservices.common import models
 
 class ApiResource(utils.Resource):
 
+    args = {}
     model = None
+    schema = None
+    page_schema = None
+    index_column = None
     filter_match_fields = []
     filter_multi_fields = []
     filter_range_fields = []
     query_options = []
     join_columns = {}
 
+    @use_kwargs(Ref('args'))
+    @marshal_with(Ref('page_schema'))
     def get(self, **kwargs):
         query = self.build_query(**kwargs)
-        return utils.fetch_page(query, kwargs, join_columns=self.join_columns)
+        return utils.fetch_page(query, kwargs, model=self.model, join_columns=self.join_columns)
 
     def build_query(self, _apply_options=True, **kwargs):
         query = self.model.query

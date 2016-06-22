@@ -25,12 +25,13 @@ class CommitteeTotals(BaseModel):
     receipts = db.Column(db.Numeric(30, 2))
     coverage_start_date = db.Column(db.DateTime(), index=True)
     coverage_end_date = db.Column(db.DateTime(), index=True)
-
     last_report_year = db.Column(db.Integer)
     last_report_type_full = db.Column(db.String)
     last_beginning_image_number = db.Column(db.BigInteger)
     last_cash_on_hand_end_period = db.Column(db.Numeric(30, 2))
     last_debts_owed_by_committee = db.Column(db.Numeric(30, 2))
+    committee_name = db.Column(db.String)
+
 
 
 class CommitteeTotalsPacParty(CommitteeTotals):

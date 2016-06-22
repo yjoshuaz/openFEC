@@ -13,6 +13,7 @@ with last as (
 select
     row_number() over () as idx,
     cmte_id as committee_id,
+    comm_dets.name as committee_name,
     two_yr_period_sk as cycle,
     min(start_date.dw_date) as coverage_start_date,
     max(end_date.dw_date) as coverage_end_date,
@@ -69,10 +70,13 @@ from
     left join dimdates start_date on cvg_start_dt_sk = start_date.date_sk and cvg_start_dt_sk != 1
     left join dimdates end_date on cvg_end_dt_sk = end_date.date_sk and cvg_end_dt_sk != 1
     left join last using (cmte_sk, two_yr_period_sk)
+    inner join ofec_committee_detail_mv comm_dets on cmte_id = comm_dets.committee_id
+
+
 where
     pnp.expire_date is null
     and two_yr_period_sk >= :START_YEAR
-group by c.cmte_id, pnp.two_yr_period_sk
+group by c.cmte_id, pnp.two_yr_period_sk, comm_dets.name
 ;
 
 create unique index on ofec_totals_pacs_parties_mv_tmp(idx);

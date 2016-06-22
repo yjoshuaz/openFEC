@@ -67,4 +67,5 @@ class TotalsView(utils.Resource):
             committee = query.first_or_404()
             return committee.committee_type
         elif committee_type is not None:
-            return reports_type_map.get(committee_type)
+            #return reports_type_map.get(committee_type)
+            return committee_type

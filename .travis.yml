@@ -39,6 +39,6 @@ before_deploy:
 deploy:
   provider: script
   skip_cleanup: true
-  script: invoke deploy --branch $TRAVIS_BRANCH --yes
+  script: invoke deploy --space feature --branch $TRAVIS_BRANCH --yes
   on:
-    all_branches: true
+    branch: travis-deploy

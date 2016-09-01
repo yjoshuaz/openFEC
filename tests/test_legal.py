@@ -84,8 +84,9 @@ class SearchTest(unittest.TestCase):
 
     @patch.object(es, 'search')
     def test_query_dsl(self, es_search):
-        response = self.app.get('/v1/legal/search/' +
-                                '?q=president&type=advisory_opinions')
+        response = self.app.get('/v1/legal/search/', query_string={
+                                'q': 'president',
+                                'type': 'advisory_opinions'})
         assert response.status_code == 200
 
         # This is mostly copy/pasted from the code to test
@@ -99,6 +100,36 @@ class SearchTest(unittest.TestCase):
                  "should": [
                      {"match": {"no": "president"}},
                      {"match_phrase": {"_all": {"query": "president", "slop": 50}}},
+                     ]
+                 }},
+            "highlight": {"fields": {"text": {},
+                "name": {}, "number": {}}},
+            "_source": {"exclude": "text"},
+            "from": 0,
+            "size": 20}
+
+        es_search.assert_called_with(body=expected_query,
+                                     index=mock.ANY,
+                                     doc_type=mock.ANY)
+
+    @patch.object(es, 'search')
+    def test_query_dsl_phrase_search(self, es_search):
+        response = self.app.get('/v1/legal/search/', query_string={
+                                'q': '"electronic filing"',
+                                'type': 'advisory_opinions'})
+        assert response.status_code == 200
+
+        # This is mostly copy/pasted from the code to test
+        # elasticsearch_dsl. This is not a very meaningful test. If you're
+        # reading this, you shoul delete this test.
+        expected_query = {"query": {"bool": {
+                 "must": [
+                     {"term": {"_type": "advisory_opinions"}},
+                     {"match_phrase": {"text": "electronic filing"}},
+                     ],
+                 "should": [
+                     {"match": {"no": '"electronic filing"'}},
+                     {"match_phrase": {"_all": {"query": '"electronic filing"', "slop": 50}}},
                      ]
                  }},
             "highlight": {"fields": {"text": {},

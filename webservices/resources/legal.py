@@ -87,7 +87,7 @@ class UniversalSearch(utils.Resource):
                 must_query.append(Q('match', _all=' '.join(terms)))
 
             if len(phrases):
-                phrase_queries = [Q('match_phrase', text=phrase) for phrase in phrases]
+                phrase_queries = [Q('match_phrase', _all=phrase) for phrase in phrases]
                 must_query.extend(phrase_queries)
                 text_highlight_query = Q('bool', must=phrase_queries)
 
@@ -109,7 +109,9 @@ class UniversalSearch(utils.Resource):
             for hit in es_results:
                 formatted_hit = hit.to_dict()
                 formatted_hits.append(formatted_hit)
-                formatted_hit['highlights'] = list(hit.meta.highlight.text)
+                formatted_hit['highlights'] = []
+                if hit.meta.highlight:
+                    formatted_hit['highlights'] = list(hit.meta.highlight.text)
 
             count = es_results.hits.total
             total_count += count

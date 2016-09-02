@@ -95,27 +95,21 @@ class UniversalSearch(utils.Resource):
                 .query(Q('bool',
                          must=must_query,
                          should=[Q('match', no=q), Q('match_phrase', _all={"query": q, "slop": 50})])) \
-                .highlight('name', 'number') \
+                .highlight('text') \
                 .source(exclude='text') \
                 .extra(size=hits_returned, from_=from_hit) \
                 .index('docs')
 
             if text_highlight_query:
                 query = query.highlight('text', highlight_query=text_highlight_query.to_dict())
-            else:
-                query = query.highlight('text')
 
             es_results = query.execute()
 
             formatted_hits = []
             for hit in es_results:
                 formatted_hit = hit.to_dict()
-                formatted_hit['highlights'] = []
                 formatted_hits.append(formatted_hit)
-
-                if 'highlight' in hit.meta:
-                    for key in hit.meta.highlight:
-                        formatted_hit['highlights'].extend(hit.meta.highlight[key])
+                formatted_hit['highlights'] = list(hit.meta.highlight.text)
 
             count = es_results.hits.total
             total_count += count
